@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.itau.integrador.entity.Endereco;
 import br.com.itau.integrador.service.CepService;
+import br.com.itau.integrador.validation.ValidaCep;
 
 @RestController
 public class CepController {
@@ -18,9 +19,12 @@ public class CepController {
 	@GetMapping("/{cep}")
 	public ResponseEntity<Endereco> getCep(@PathVariable String cep) {
 		
-		Endereco endereco = cepService.buscaEnderecoPorCep(cep);
-		
-		return endereco != null ? ResponseEntity.ok().body(endereco) : ResponseEntity.notFound().build(); 
+		if (ValidaCep.validarCEP(cep)) {
+			Endereco endereco = cepService.buscaEnderecoPorCep(cep);
+			return endereco != null ? ResponseEntity.ok().body(endereco) : ResponseEntity.notFound().build();
+		} else {
+			return null;
+		}
 	}
 
 }
